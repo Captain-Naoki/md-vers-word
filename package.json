@@ -1,0 +1,22 @@
+{
+  "name": "md-vers-word",
+  "version": "1.0.0",
+  "description": "Convertit le Markdown + LaTeX de NotebookLM (ou ChatGPT, Gemini…) en texte collable dans Microsoft Word, avec de vraies équations Word modifiables.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/run.mjs test/cas.md test/cas.docx"
+  },
+  "keywords": ["markdown", "latex", "word", "omml", "notebooklm", "equations"],
+  "license": "MIT",
+  "dependencies": {
+    "jszip": "^3.10.2",
+    "marked": "^18.1.1",
+    "temml": "^0.14.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "linkedom": "^0.18.14"
+  }
+}

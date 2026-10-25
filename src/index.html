@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MD vers Word</title>
+<style>
+/*__TEMML_CSS__*/
+:root {
+  --bg: #f3f1ec; --panel: #fbfaf7; --ink: #1d232b; --muted: #5d6672; --line: #dcd7cc;
+  --accent: #1f4e79; --accent-ink: #fff; --accent-soft: #e3ecf5; --paper: #ffffff; --paper-ink: #111;
+  --ok: #1e6b43; --warn: #9a4b00; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181c; --panel: #1c2026; --ink: #e7e9ec; --muted: #9aa3ad; --line: #2e343c;
+    --accent: #6fa8dc; --accent-ink: #0d1620; --accent-soft: #1f2d3b; --shadow: 0 1px 2px rgba(0,0,0,.4);
+    --ok: #6fd19c; --warn: #f0b36a;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; display: flex; flex-direction: column; }
+header { display: flex; align-items: center; gap: 14px; padding: 14px 20px 10px; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand h1 { font: 600 19px/1.1 Georgia, "Times New Roman", serif; margin: 0; letter-spacing: .2px; }
+.brand h1 b { color: var(--accent); font-weight: 600; }
+.brand span { color: var(--muted); font-size: 13px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 0 20px 12px; }
+.toolbar .sep { width: 1px; height: 24px; background: var(--line); margin: 0 4px; }
+.toolbar .grow { flex: 1; }
+button, select { font: inherit; color: inherit; }
+button { border: 1px solid var(--line); background: var(--panel); padding: 7px 12px; border-radius: 7px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; padding: 8px 16px; }
+button.primary:hover { filter: brightness(1.08); }
+button.secondary { border-color: var(--accent); color: var(--accent); font-weight: 600; background: var(--accent-soft); }
+label.opt { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+select { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 5px 6px; }
+main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 14px; padding: 0 20px 14px; min-height: 0; }
+.pane { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+.pane-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.pane-head em { text-transform: none; letter-spacing: 0; font-style: normal; font-weight: 400; }
+textarea { flex: 1; border: 0; resize: none; padding: 14px 16px; background: transparent; color: var(--ink); font: 13px/1.55 Consolas, "Cascadia Mono", monospace; outline: none; min-height: 320px; }
+.paper-wrap { flex: 1; overflow: auto; background: color-mix(in srgb, var(--bg) 70%, var(--panel)); padding: 18px; }
+#preview { background: var(--paper); color: var(--paper-ink); max-width: 800px; margin: 0 auto; padding: 48px 56px; min-height: 100%; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 6px 18px rgba(0,0,0,.07); text-align: justify; line-height: 1.5; }
+#preview p { margin: 0 0 8pt; }
+#preview h1, #preview h2, #preview h3, #preview h4 { color: #1f3864; text-align: left; margin: 14pt 0 6pt; line-height: 1.25; }
+#preview h1 { font-size: 1.6em; } #preview h2 { font-size: 1.35em; } #preview h3 { font-size: 1.15em; } #preview h4 { font-size: 1em; }
+#preview ul, #preview ol { margin: 0 0 8pt; padding-left: 2em; }
+#preview li { margin: 0 0 3pt; }
+#preview li > p { margin-bottom: 4pt; }
+#preview blockquote { margin: 0 0 8pt; padding-left: 12px; border-left: 4px solid #a5b4c8; color: #404040; font-style: italic; }
+#preview table { border-collapse: collapse; margin: 6pt 0 10pt; text-align: left; }
+#preview th, #preview td { border: 1px solid #555; padding: 4px 8px; vertical-align: middle; }
+#preview th { background: #e7eef7; }
+#preview code { font-family: Consolas, monospace; background: #f2f2f2; padding: 0 3px; font-size: .9em; }
+#preview pre { background: #f2f2f2; padding: 8px 10px; overflow: auto; text-align: left; }
+#preview pre code { background: none; padding: 0; }
+#preview hr { border: 0; border-top: 1px solid #a0a0a0; margin: 12pt 0; }
+#preview .empty { color: #999; text-align: center; margin-top: 60px; font-style: italic; }
+#preview .math-block { text-align: center; margin: 8pt 0 10pt; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+#preview span.math { cursor: pointer; border-radius: 4px; transition: background .15s, box-shadow .15s; }
+#preview span.math:hover { background: #eef4fb; box-shadow: 0 0 0 3px #eef4fb; }
+#preview span.math.flash { background: #d6f0df; box-shadow: 0 0 0 3px #d6f0df; }
+#preview span.math-display { display: inline-block; }
+#preview math { font-size: 1.05em; }
+#preview .math-error { color: #c00000; font-family: Consolas, monospace; font-size: .9em; }
+footer { display: flex; align-items: center; gap: 16px; padding: 0 20px 14px; color: var(--muted); font-size: 12.5px; flex-wrap: wrap; }
+#stats { font-weight: 600; color: var(--ink); }
+details { padding: 0 20px 12px; }
+details summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 13px; }
+.help { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 10px; }
+.help div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+.help h3 { margin: 0 0 4px; font-size: 13px; }
+.help ol, .help ul { margin: 4px 0 0; padding-left: 18px; }
+kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; font-size: 12px; background: var(--panel); }
+#toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 8px; font-weight: 500; transition: .25s; max-width: min(92vw, 620px); text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+#toast[data-kind="warn"] { background: var(--warn); color: #fff; }
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; }
+  textarea { min-height: 220px; }
+  #preview { padding: 24px 20px; }
+  header, .toolbar, main, footer, details { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>Markdown <b>→</b> Word</h1><span>Le texte de NotebookLM, prêt à coller dans votre mémoire — équations comprises.</span></div>
+</header>
+
+<div class="toolbar">
+  <button id="btnPaste" title="Coller le contenu du presse-papiers">📋 Coller</button>
+  <button id="btnClear">Effacer</button>
+  <button id="btnSample">Exemple</button>
+  <span class="sep"></span>
+  <label class="opt"><input type="checkbox" id="optCite"> Retirer les citations [1], [2-4]</label>
+  <label class="opt">Police
+    <select id="optFont">
+      <option value="tnr">Times New Roman 12</option>
+      <option value="calibri">Calibri 11</option>
+      <option value="arial">Arial 11</option>
+      <option value="cambria">Cambria 12</option>
+      <option value="garamond">Garamond 12</option>
+      <option value="none">Celle de mon document Word</option>
+    </select>
+  </label>
+  <label class="opt">Copie
+    <select id="optMode" title="Si les équations ne s'affichent pas bien après collage, essayez l'autre méthode">
+      <option value="omml">Équations Word (recommandé)</option>
+      <option value="mathml">MathML (méthode alternative)</option>
+    </select>
+  </label>
+  <span class="grow"></span>
+  <button id="btnDocx" class="secondary" title="Crée un fichier Word avec de vraies équations">⬇ Télécharger .docx</button>
+  <button id="btnCopy" class="primary">Copier pour Word</button>
+</div>
+
+<main>
+  <section class="pane">
+    <div class="pane-head">Texte NotebookLM (Markdown) <em><kbd>Ctrl</kbd>+<kbd>V</kbd> ici</em></div>
+    <textarea id="src" spellcheck="false" placeholder="Collez ici le texte copié depuis NotebookLM (ou ChatGPT, Gemini…)&#10;&#10;Exemple :  La variation $\Delta T = T_{futur} - T_{hist}$ …&#10;&#10;$$\Delta P_{99.5}(\%) = \frac{P_{futur} - P_{hist}}{P_{hist}} \times 100$$"></textarea>
+  </section>
+  <section class="pane">
+    <div class="pane-head">Aperçu Word <em>cliquez sur une équation pour la copier seule</em></div>
+    <div class="paper-wrap"><article id="preview"></article></div>
+  </section>
+</main>
+
+<footer><span id="stats"></span><span>Tout fonctionne hors ligne, sur votre ordinateur — rien n’est envoyé sur Internet.</span></footer>
+
+<details>
+  <summary>Mode d’emploi et solutions si les équations ne passent pas</summary>
+  <div class="help">
+    <div><h3>1 · Méthode rapide</h3><ol><li>Dans NotebookLM, copiez la réponse (bouton copier).</li><li>Collez-la dans la zone de gauche.</li><li>Cliquez <b>Copier pour Word</b>, puis <kbd>Ctrl</kbd>+<kbd>V</kbd> dans Word.</li></ol></div>
+    <div><h3>2 · Méthode 100 % sûre</h3><ol><li>Cliquez <b>Télécharger .docx</b>.</li><li>Ouvrez le fichier : les équations sont de vraies équations Word modifiables.</li><li>Copiez-collez de ce fichier vers votre mémoire.</li></ol></div>
+    <div><h3>3 · Une équation à la fois</h3><ul><li>Cliquez sur une équation dans l’aperçu.</li><li>Dans Word, <kbd>Ctrl</kbd>+<kbd>V</kbd> : elle devient une équation modifiable.</li><li>Si la copie rapide donne un résultat imparfait, essayez « MathML (méthode alternative) ».</li></ul></div>
+  </div>
+</details>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script>/*__APP_JS__*/</script>
+</body>
+</html>

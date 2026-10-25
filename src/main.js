@@ -1,4 +1,5 @@
 import { markdownToHtml, liftDisplayMath, stripCitations } from './markdown.js';
+import { repairFlattened, stripGluedCitations } from './repair.js';
 import { buildDocx } from './docx.js';
 import { buildClipboardHtml, buildPlainText, copyRich, copySingleEquation } from './clipboard.js';
 
@@ -48,7 +49,9 @@ $$\int_0^{\infty} e^{-x}\,dx = 1 \qquad \begin{pmatrix} a & b \\ c & d \end{pmat
 let timer = null;
 function render() {
   const raw = src.value;
-  const md = $('optCite').checked ? stripCitations(raw) : raw;
+  let md = raw;
+  if ($('optRepair').checked) md = repairFlattened(md);
+  if ($('optCite').checked) md = stripGluedCitations(stripCitations(md));
   preview.innerHTML = md.trim() ? markdownToHtml(md) : '<p class="empty">L’aperçu apparaîtra ici…</p>';
   liftDisplayMath(preview);
   const n = preview.querySelectorAll('span.math').length;
@@ -77,6 +80,7 @@ function toast(msg, kind = 'ok') {
 
 src.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 180); });
 $('optCite').addEventListener('change', () => { store.set('md2word.cite', $('optCite').checked ? '1' : '0'); render(); });
+$('optRepair').addEventListener('change', () => { store.set('md2word.repair', $('optRepair').checked ? '1' : '0'); render(); });
 $('optFont').addEventListener('change', applyFont);
 $('optMode').addEventListener('change', () => store.set('md2word.mode', $('optMode').value));
 
@@ -133,6 +137,7 @@ preview.addEventListener('click', (e) => {
 // Restauration de la session précédente
 src.value = store.get('md2word.src') || '';
 if (store.get('md2word.cite') === '1') $('optCite').checked = true;
+if (store.get('md2word.repair') === '0') $('optRepair').checked = false;
 if (store.get('md2word.font') && FONTS[store.get('md2word.font')]) $('optFont').value = store.get('md2word.font');
 if (store.get('md2word.mode')) $('optMode').value = store.get('md2word.mode');
 applyFont();

@@ -3,3 +3,4 @@ dist/
 .vercel/
 test/*.docx
 test/*.clip.html
+test/*.repare.md

@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "node build.mjs",
-    "test": "node test/run.mjs test/cas.md test/cas.docx"
+    "test": "node test/repair.mjs && node test/run.mjs test/cas.md test/cas.docx"
   },
   "keywords": ["markdown", "latex", "word", "omml", "notebooklm", "equations"],
   "license": "MIT",

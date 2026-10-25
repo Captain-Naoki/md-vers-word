@@ -97,7 +97,8 @@ kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4p
   <button id="btnClear">Effacer</button>
   <button id="btnSample">Exemple</button>
   <span class="sep"></span>
-  <label class="opt"><input type="checkbox" id="optCite"> Retirer les citations [1], [2-4]</label>
+  <label class="opt" title="Reconstitue titres, paragraphes et listes quand le texte a été copié à la souris et que tout est collé sur une ligne. Un texte bien formaté n'est pas modifié."><input type="checkbox" id="optRepair" checked> Réparer la mise en forme</label>
+  <label class="opt" title="Retire [1], [2-4] et les numéros collés aux mots (observées78. → observées.)"><input type="checkbox" id="optCite"> Retirer les références</label>
   <label class="opt">Police
     <select id="optFont">
       <option value="tnr">Times New Roman 12</option>

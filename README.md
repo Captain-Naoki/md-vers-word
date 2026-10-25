@@ -29,7 +29,8 @@ Cet outil transforme ce texte (Markdown + LaTeX) en contenu Word propre : les **
 **Options**
 
 - **Police** : Times New Roman 12 (par défaut), Calibri, Arial, Cambria, Garamond, ou celle de votre document.
-- **Retirer les citations** : supprime les renvois `[1]`, `[2-4]` propres à NotebookLM (désactivé par défaut).
+- **Réparer la mise en forme** (activé par défaut) : si le texte a été copié à la souris et que tout est collé sur une seule ligne (« généralePour », « ?La MSE »), l'outil reconstitue les titres, paragraphes, listes et sous-listes, et retire les numéros de référence collés aux mots (« observées78. » → « observées. »). Un texte déjà bien formaté n'est pas modifié.
+- **Retirer les références** : supprime les renvois `[1]`, `[2-4]` et les numéros collés à la fin d'un mot, dans tout le texte (désactivé par défaut). Les unités et sigles comme `km2`, `CO2`, `SSP3-70`, `ERA5` sont conservés.
 - **Copie → MathML** : méthode de collage alternative si la méthode par défaut ne donne pas un bon résultat dans votre version de Word.
 
 **Confidentialité :** toute la conversion se fait dans votre navigateur. Aucun texte n'est envoyé à un serveur, même sur la version en ligne.
@@ -57,6 +58,7 @@ Markdown + LaTeX ──marked──▶ HTML ──Temml──▶ MathML ──co
 | Fichier | Rôle |
 |---|---|
 | [`src/markdown.js`](src/markdown.js) | Analyse le Markdown et repère les équations (`$`, `$$`, `\(`, `\[`) |
+| [`src/repair.js`](src/repair.js) | Reconstitue la mise en forme des textes copiés à la souris et retire les références collées |
 | [`src/omml.js`](src/omml.js) | Convertit le MathML en OMML, le format natif des équations Word |
 | [`src/docx.js`](src/docx.js) | Génère le fichier `.docx` (styles, listes, tableaux, équations) |
 | [`src/clipboard.js`](src/clipboard.js) | Prépare le contenu du presse-papiers au format compris par Word |
@@ -72,7 +74,7 @@ Prérequis : [Node.js](https://nodejs.org) 18 ou plus récent.
 ```bash
 npm install
 npm run build   # produit MD-vers-Word.html et dist/index.html
-npm test        # convertit test/cas.md en test/cas.docx
+npm test        # teste la réparation (test/aplati.md) puis convertit test/cas.md en test/cas.docx
 ```
 
 Ouvrez ensuite `MD-vers-Word.html` dans Chrome ou Edge.

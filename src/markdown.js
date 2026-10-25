@@ -40,7 +40,8 @@ const inlineMath = {
     if ((m = /^\$\$([\s\S]+?)\$\$/.exec(src))) return { type: 'inlineMath', raw: m[0], text: m[1].trim(), display: true };
     if ((m = /^\\\[([\s\S]+?)\\\]/.exec(src))) return { type: 'inlineMath', raw: m[0], text: m[1].trim(), display: true };
     if ((m = /^\\\(([\s\S]+?)\\\)/.exec(src))) return { type: 'inlineMath', raw: m[0], text: m[1].trim(), display: false };
-    if ((m = /^\$(?![\s$])((?:\\.|[^\\$\n]|\n(?!\n))+?)(?<![\s\\])\$(?!\d)/.exec(src)))
+    // Pas de règle « pas de chiffre après le $ fermant » : NotebookLM colle ses numéros de citation ($i$8.)
+    if ((m = /^\$(?![\s$])((?:\\.|[^\\$\n]|\n(?!\n))+?)(?<![\s\\])\$/.exec(src)))
       return { type: 'inlineMath', raw: m[0], text: m[1].trim(), display: false };
     return undefined;
   },

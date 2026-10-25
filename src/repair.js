@@ -103,9 +103,34 @@ function repairLine(t) {
   return out.trim();
 }
 
+/**
+ * Tableaux copiés depuis une page web : le navigateur les donne en texte avec des tabulations
+ * entre les cellules. On les convertit en tableau Markdown (au moins 2 lignes consécutives).
+ */
+export function tabsToTables(md) {
+  const lines = md.split('\n');
+  const out = [];
+  let inCode = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*(```|~~~)/.test(lines[i])) inCode = !inCode;
+    if (inCode || !lines[i].includes('\t')) { out.push(lines[i]); continue; }
+    let j = i;
+    while (j < lines.length && lines[j].includes('\t')) j++;
+    if (j - i < 2) { out.push(lines[i]); continue; }
+    const rows = lines.slice(i, j).map((l) => l.split('\t').map((c) => c.trim().replace(/(?<!\\)\|/g, '\\|')));
+    const n = Math.max(...rows.map((r) => r.length));
+    const fmt = (r) => `| ${Array.from({ length: n }, (_, k) => r[k] || ' ').join(' | ')} |`;
+    if (out.length && out[out.length - 1].trim()) out.push('');
+    out.push(fmt(rows[0]), `|${' --- |'.repeat(n)}`, ...rows.slice(1).map(fmt), '');
+    i = j - 1;
+  }
+  return out.join('\n');
+}
+
 /** Répare uniquement les lignes « aplaties » ; le reste du texte est rendu tel quel. */
 export function repairFlattened(md) {
-  return md.split('\n').map((line) => {
+  return tabsToTables(md).split('\n').map((line) => {
+    if (line.trimStart().startsWith('|')) return line; // tableau
     const { t, restore } = protect(line);
     return looksFlattened(t) ? restore(repairLine(t)) : line;
   }).join('\n');

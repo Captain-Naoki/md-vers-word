@@ -29,7 +29,7 @@ Cet outil transforme ce texte (Markdown + LaTeX) en contenu Word propre : les **
 **Options**
 
 - **Police** : Times New Roman 12 (par défaut), Calibri, Arial, Cambria, Garamond, ou celle de votre document.
-- **Réparer la mise en forme** (activé par défaut) : si le texte a été copié à la souris et que tout est collé sur une seule ligne (« généralePour », « ?La MSE »), l'outil reconstitue les titres, paragraphes, listes et sous-listes, et retire les numéros de référence collés aux mots (« observées78. » → « observées. »). Un texte déjà bien formaté n'est pas modifié.
+- **Réparer la mise en forme** (activé par défaut) : si le texte a été copié à la souris et que tout est collé sur une seule ligne (« généralePour », « ?La MSE »), l'outil reconstitue les titres, paragraphes, listes et sous-listes, et retire les numéros de référence collés aux mots (« observées78. » → « observées. »). Les tableaux copiés depuis la page (cellules séparées par des tabulations) redeviennent de vrais tableaux. Un texte déjà bien formaté n'est pas modifié.
 - **Retirer les références** : supprime les renvois `[1]`, `[2-4]` et les numéros collés à la fin d'un mot, dans tout le texte (désactivé par défaut). Les unités et sigles comme `km2`, `CO2`, `SSP3-70`, `ERA5` sont conservés.
 - **Copie → MathML** : méthode de collage alternative si la méthode par défaut ne donne pas un bon résultat dans votre version de Word.
 
